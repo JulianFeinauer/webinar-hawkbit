@@ -4,10 +4,11 @@ from datetime import datetime
 import requests
 
 tenant = "DEFAULT"
-controller_id = "Device02"
-auth_token = "feb1be9bc47ce5bf4f2441b29adfb7b5"
+controller_id = "Device01"
+auth_token = "c50218d2fb994c13a32e2402156e2297"
 should_download = True
 should_finish_update = True
+update_exception = False
 
 
 def get_with_token(url):
@@ -59,11 +60,15 @@ if "deploymentBase" in links:
                 file = get_with_token(download_link)
                 print(file.content)
                 # Signal that the Update is finished!
-                response_payload = json.dumps({"id": action_id, "time": datetime.now().strftime('%Y%m%dT%H%M%S'),
-                                               "status": {"result": {"finished": "success"}, "execution": "closed"},
-                                               "details": "The update worked like a charm"})
-                print(response_payload)
                 if should_finish_update:
+                    if update_exception:
+                        result = "failure"
+                    else:
+                        result = "success"
+                    response_payload = json.dumps({"id": action_id, "time": datetime.now().strftime('%Y%m%dT%H%M%S'),
+                                                   "status": {"result": {"finished": result}, "execution": "closed"},
+                                                   "details": "The update worked like a charm"})
+                    print(response_payload)
                     post_response = requests.post(
                         f'http://localhost:8080/{tenant}/controller/v1/{controller_id}/deploymentBase/{action_id}/feedback',
                         headers={'Authorization': 'TargetToken {}'.format(auth_token),
