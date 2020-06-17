@@ -4,8 +4,8 @@ from datetime import datetime
 import requests
 
 tenant = "DEFAULT"
-controller_id = "Device01"
-auth_token = "c50218d2fb994c13a32e2402156e2297"
+controller_id = "MyDevice"
+auth_token = "ac4133fab7f419d4f26f9bf91fdd2b83"
 should_download = True
 should_finish_update = True
 update_exception = False
